@@ -46,19 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ==================== STRIPE PAYMENT INTEGRATION ====================
-let stripe;
-
-// Initialize Stripe when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize Stripe with publishable key from config
-    if (typeof STRIPE_CONFIG !== 'undefined' && STRIPE_CONFIG.publishableKey) {
-        stripe = Stripe(STRIPE_CONFIG.publishableKey);
-        console.log('✅ Stripe initialized');
-    } else {
-        console.warn('⚠️ Stripe config not found. Please update config.js with your Stripe keys.');
-    }
-});
+// ==================== FLUTTERWAVE PAYMENT INTEGRATION ====================
 
 // ==================== PRICING CARD INTERACTIONS ====================
 document.addEventListener('DOMContentLoaded', () => {
@@ -77,50 +65,61 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-async function handleSubscription(plan, planName, price) {
-    // Check if Stripe is initialized
-    if (!stripe) {
+function handleSubscription(plan, planName, price) {
+    // Check if Flutterwave config is loaded
+    if (typeof PAYMENT_CONFIG === 'undefined') {
         alert('Payment system is not configured. Please contact support.');
-        console.error('Stripe not initialized. Check config.js');
+        console.error('Payment config not found. Check config.js');
         return;
     }
 
-    // Check if price ID is configured
-    if (!STRIPE_CONFIG.prices[plan] || STRIPE_CONFIG.prices[plan].includes('PRICE_ID')) {
-        alert(`Payment not configured for ${planName} plan.\n\nTo enable payments:\n1. Create products in Stripe Dashboard\n2. Update config.js with Price IDs\n\nSee config.js for detailed instructions.`);
-        console.error(`Price ID not configured for ${plan} plan`);
+    // Check if public key is configured
+    if (!PAYMENT_CONFIG.publicKey || PAYMENT_CONFIG.publicKey.includes('YOUR_PUBLIC_KEY_HERE')) {
+        alert(`Payment not configured yet.\n\nTo enable payments:\n1. Create Flutterwave account at flutterwave.com\n2. Get your Public Key from dashboard\n3. Update config.js with your key\n\nSee config.js for detailed instructions.`);
+        console.error('Flutterwave public key not configured');
         return;
     }
 
+    // Get plan details from config
+    const planDetails = PAYMENT_CONFIG.plans[plan];
+    if (!planDetails) {
+        alert('Invalid plan selected. Please try again.');
+        return;
+    }
+
+    // Generate unique transaction reference
+    const txRef = 'SS-' + Date.now() + '-' + Math.floor(Math.random() * 1000000);
+
+    // Configure Flutterwave payment
+    const paymentData = {
+        public_key: PAYMENT_CONFIG.publicKey,
+        tx_ref: txRef,
+        amount: planDetails.amount,
+        currency: planDetails.currency,
+        payment_options: 'card,ussd,banktransfer',
+        redirect_url: PAYMENT_CONFIG.redirectUrl,
+        customer: {
+            email: '', // Will be collected by Flutterwave
+            name: '', // Will be collected by Flutterwave
+        },
+        customizations: {
+            title: PAYMENT_CONFIG.businessName,
+            description: `${planName} - ${planDetails.description}`,
+            logo: PAYMENT_CONFIG.businessLogo || '',
+        },
+        meta: {
+            plan: plan,
+            plan_name: planName,
+            subscription_type: planDetails.interval,
+        },
+    };
+
+    // Initialize Flutterwave payment modal
     try {
-        // Show loading state
-        const button = event.target;
-        const originalText = button.textContent;
-        button.textContent = 'Loading...';
-        button.disabled = true;
-
-        // Redirect to Stripe Checkout
-        const { error } = await stripe.redirectToCheckout({
-            lineItems: [{
-                price: STRIPE_CONFIG.prices[plan],
-                quantity: 1
-            }],
-            mode: 'subscription',
-            successUrl: STRIPE_CONFIG.successUrl,
-            cancelUrl: STRIPE_CONFIG.cancelUrl,
-            billingAddressCollection: 'required',
-            customerEmail: '', // Optional: pre-fill if you have user email
-        });
-
-        if (error) {
-            console.error('Stripe Checkout error:', error);
-            alert('Payment failed. Please try again.');
-            button.textContent = originalText;
-            button.disabled = false;
-        }
-    } catch (err) {
-        console.error('Subscription error:', err);
-        alert('An error occurred. Please try again.');
+        FlutterwaveCheckout(paymentData);
+    } catch (error) {
+        console.error('Flutterwave initialization error:', error);
+        alert('Payment system error. Please try again or contact support.');
     }
 }
 
@@ -230,3 +229,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================== CONSOLE BRANDING ====================
 console.log('%c📚 StudentSuccess Platform', 'font-size: 20px; font-weight: bold; color: #667eea;');
 console.log('%cBuilt with ❤️ for students', 'font-size: 12px; color: #8892a6;');
+console.log('%cPowered by Flutterwave', 'font-size: 10px; color: #f5576c;');
