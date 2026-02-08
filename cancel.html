@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Cancelled - Student Success Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cancel-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .cancel-content {
+            max-width: 600px;
+        }
+
+        .cancel-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .cancel-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .cancel-message {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .help-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+            backdrop-filter: blur(10px);
+        }
+
+        .help-box h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .help-box p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .help-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .help-box li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .help-box li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cancel-container">
+        <div class="cancel-content">
+            <div class="cancel-icon">😕</div>
+            <h1 class="cancel-title">Payment Cancelled</h1>
+            <p class="cancel-message">
+                Your payment was cancelled. No charges have been made to your account.
+            </p>
+
+            <div class="help-box">
+                <h3>Need Help?</h3>
+                <p>If you encountered any issues or have questions:</p>
+                <ul>
+                    <li>Contact our support team at support@studentsuccess.com</li>
+                    <li>Check our FAQ for common questions</li>
+                    <li>Try a different payment method</li>
+                    <li>Chat with us for immediate assistance</li>
+                </ul>
+            </div>
+
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-primary" onclick="window.location.href='index.html#pricing'">
+                    Try Again
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='index.html'">
+                    Return to Home
+                </button>
+            </div>
+
+            <p style="margin-top: 2rem; color: var(--text-muted); font-size: 0.875rem;">
+                We're here to help! Feel free to reach out if you need assistance.
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -46,6 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// ==================== STRIPE PAYMENT INTEGRATION ====================
+let stripe;
+
+// Initialize Stripe when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Stripe with publishable key from config
+    if (typeof STRIPE_CONFIG !== 'undefined' && STRIPE_CONFIG.publishableKey) {
+        stripe = Stripe(STRIPE_CONFIG.publishableKey);
+        console.log('✅ Stripe initialized');
+    } else {
+        console.warn('⚠️ Stripe config not found. Please update config.js with your Stripe keys.');
+    }
+});
+
 // ==================== PRICING CARD INTERACTIONS ====================
 document.addEventListener('DOMContentLoaded', () => {
     const pricingCards = document.querySelectorAll('.pricing-card');
@@ -54,18 +68,60 @@ document.addEventListener('DOMContentLoaded', () => {
         const button = card.querySelector('.btn-primary');
 
         button.addEventListener('click', function () {
+            const plan = this.getAttribute('data-plan');
+            const price = this.getAttribute('data-price');
             const planName = card.querySelector('.plan-name').textContent;
-            handleSubscription(planName);
+
+            handleSubscription(plan, planName, price);
         });
     });
 });
 
-function handleSubscription(planName) {
-    // This would integrate with your payment processor (Stripe, PayPal, etc.)
-    alert(`Starting free trial for ${planName} plan!\n\nIn production, this would redirect to a secure payment page.`);
+async function handleSubscription(plan, planName, price) {
+    // Check if Stripe is initialized
+    if (!stripe) {
+        alert('Payment system is not configured. Please contact support.');
+        console.error('Stripe not initialized. Check config.js');
+        return;
+    }
 
-    // Example: Redirect to signup/payment page
-    // window.location.href = `/signup?plan=${planName.toLowerCase()}`;
+    // Check if price ID is configured
+    if (!STRIPE_CONFIG.prices[plan] || STRIPE_CONFIG.prices[plan].includes('PRICE_ID')) {
+        alert(`Payment not configured for ${planName} plan.\n\nTo enable payments:\n1. Create products in Stripe Dashboard\n2. Update config.js with Price IDs\n\nSee config.js for detailed instructions.`);
+        console.error(`Price ID not configured for ${plan} plan`);
+        return;
+    }
+
+    try {
+        // Show loading state
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = 'Loading...';
+        button.disabled = true;
+
+        // Redirect to Stripe Checkout
+        const { error } = await stripe.redirectToCheckout({
+            lineItems: [{
+                price: STRIPE_CONFIG.prices[plan],
+                quantity: 1
+            }],
+            mode: 'subscription',
+            successUrl: STRIPE_CONFIG.successUrl,
+            cancelUrl: STRIPE_CONFIG.cancelUrl,
+            billingAddressCollection: 'required',
+            customerEmail: '', // Optional: pre-fill if you have user email
+        });
+
+        if (error) {
+            console.error('Stripe Checkout error:', error);
+            alert('Payment failed. Please try again.');
+            button.textContent = originalText;
+            button.disabled = false;
+        }
+    } catch (err) {
+        console.error('Subscription error:', err);
+        alert('An error occurred. Please try again.');
+    }
 }
 
 // ==================== HEADER SCROLL EFFECT ====================
