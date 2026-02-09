@@ -26,6 +26,7 @@
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="contact-form.css">
 </head>
 
 <body>
@@ -37,10 +38,10 @@
         <div class="logo">📚 StudentSuccess</div>
         <ul class="nav-links">
           <li><a href="#services">Services</a></li>
-          <li><a href="#pricing">Pricing</a></li>
           <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
-        <button class="cta-button" onclick="scrollToPricing()">Get Started</button>
+        <button class="cta-button" onclick="scrollToContact()">Contact Us</button>
       </nav>
     </div>
   </header>
@@ -53,7 +54,7 @@
         <p>From essays to college applications, we've got you covered. Join thousands of students achieving their
           academic goals with our premium support services.</p>
         <div class="hero-buttons">
-          <button class="btn-primary" onclick="scrollToPricing()">Start Free Trial</button>
+          <button class="btn-primary" onclick="scrollToContact()">Contact Us</button>
           <button class="btn-secondary" onclick="scrollToServices()">Explore Services</button>
         </div>
       </div>
@@ -196,65 +197,68 @@
     </div>
   </section>
 
-  <!-- PRICING SECTION -->
-  <section id="pricing" class="pricing section">
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="pricing section">
     <div class="container">
       <div class="section-header">
-        <h2>Choose Your Plan</h2>
-        <p>Flexible pricing for every student's needs</p>
+        <h2>Get in Touch</h2>
+        <p>Have questions? Want to learn more about our services? We're here to help!</p>
       </div>
 
-      <div class="pricing-grid">
+      <div class="contact-form-container">
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required placeholder="John Doe">
+          </div>
 
-        <!-- Basic Plan -->
-        <div class="pricing-card scroll-reveal">
-          <div class="plan-name">Basic</div>
-          <div class="plan-price">$19</div>
-          <div class="plan-period">per month</div>
-          <ul class="plan-features">
-            <li>5 Essay Reviews per month</li>
-            <li>Basic Study Materials</li>
-            <li>Flashcard Access</li>
-            <li>Email Support</li>
-            <li>Syllabus Planning Tools</li>
-          </ul>
-          <button class="btn-primary" data-plan="basic" data-price="19">Start Free Trial</button>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required placeholder="john@example.com">
+          </div>
+
+          <div class="form-group">
+            <label for="service">Service Interested In</label>
+            <select id="service" name="service">
+              <option value="">Select a service...</option>
+              <option value="essay-help">Essay Help</option>
+              <option value="exam-prep">Exam Preparation</option>
+              <option value="college-apps">College Applications</option>
+              <option value="study-materials">Study Materials</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required
+              placeholder="Tell us how we can help you..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary">Send Message</button>
+        </form>
+
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <h4>Email Us</h4>
+            <p>support@studentsuccess.com</p>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">💬</div>
+            <h4>Live Chat</h4>
+            <p>Available Mon-Fri, 9AM-5PM EAT</p>
+          </div>
+
+          <div class="contact-item">
+            <div class="contact-icon">📱</div>
+            <h4>WhatsApp</h4>
+            <p>+254 XXX XXX XXX</p>
+          </div>
         </div>
-
-        <!-- Pro Plan (Featured) -->
-        <div class="pricing-card featured scroll-reveal">
-          <div class="plan-name">Pro</div>
-          <div class="plan-price">$49</div>
-          <div class="plan-period">per month</div>
-          <ul class="plan-features">
-            <li>Unlimited Essay Reviews</li>
-            <li>All Study Materials</li>
-            <li>College Application Suite</li>
-            <li>Essay Hook Generator</li>
-            <li>College List Discovery</li>
-            <li>Priority Support</li>
-            <li>Exam Prep Resources</li>
-          </ul>
-          <button class="btn-primary" data-plan="pro" data-price="49">Start Free Trial</button>
-        </div>
-
-        <!-- Premium Plan -->
-        <div class="pricing-card scroll-reveal">
-          <div class="plan-name">Premium</div>
-          <div class="plan-price">$99</div>
-          <div class="plan-period">per month</div>
-          <ul class="plan-features">
-            <li>Everything in Pro</li>
-            <li>1-on-1 Coaching Sessions</li>
-            <li>Application Review Service</li>
-            <li>Personalized Study Plans</li>
-            <li>24/7 Premium Support</li>
-            <li>Early Access to New Features</li>
-          </ul>
-          <button class="btn-primary" data-plan="premium" data-price="99">Start Free Trial</button>
-        </div>
-
       </div>
+
     </div>
   </section>
 

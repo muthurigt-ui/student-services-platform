@@ -5,8 +5,8 @@ function scrollToServices() {
     });
 }
 
-function scrollToPricing() {
-    document.getElementById('pricing').scrollIntoView({
+function scrollToContact() {
+    document.getElementById('contact').scrollIntoView({
         behavior: 'smooth'
     });
 }
@@ -46,82 +46,51 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ==================== FLUTTERWAVE PAYMENT INTEGRATION ====================
+// ==================== CONTACT FORM HANDLING ====================
 
-// ==================== PRICING CARD INTERACTIONS ====================
 document.addEventListener('DOMContentLoaded', () => {
-    const pricingCards = document.querySelectorAll('.pricing-card');
+    const contactForm = document.getElementById('contactForm');
 
-    pricingCards.forEach(card => {
-        const button = card.querySelector('.btn-primary');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function (e) {
+            e.preventDefault();
 
-        button.addEventListener('click', function () {
-            const plan = this.getAttribute('data-plan');
-            const price = this.getAttribute('data-price');
-            const planName = card.querySelector('.plan-name').textContent;
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                service: document.getElementById('service').value,
+                message: document.getElementById('message').value
+            };
 
-            handleSubscription(plan, planName, price);
+            // Log form data (in production, send to backend/email service)
+            console.log('Contact Form Submission:', formData);
+
+            // Show success message
+            alert(`Thank you, ${formData.name}! We've received your message and will get back to you soon at ${formData.email}.`);
+
+            // Reset form
+            contactForm.reset();
+
+            // In production, you would send this to your backend or email service:
+            // Example with EmailJS, Formspree, or your own API:
+            /*
+            fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            }).then(response => response.json())
+              .then(data => {
+                alert('Message sent successfully!');
+                contactForm.reset();
+              })
+              .catch(error => {
+                alert('Error sending message. Please try again.');
+              });
+            */
         });
-    });
+    }
 });
-
-function handleSubscription(plan, planName, price) {
-    // Check if Flutterwave config is loaded
-    if (typeof PAYMENT_CONFIG === 'undefined') {
-        alert('Payment system is not configured. Please contact support.');
-        console.error('Payment config not found. Check config.js');
-        return;
-    }
-
-    // Check if public key is configured
-    if (!PAYMENT_CONFIG.publicKey || PAYMENT_CONFIG.publicKey.includes('YOUR_PUBLIC_KEY_HERE')) {
-        alert(`Payment not configured yet.\n\nTo enable payments:\n1. Create Flutterwave account at flutterwave.com\n2. Get your Public Key from dashboard\n3. Update config.js with your key\n\nSee config.js for detailed instructions.`);
-        console.error('Flutterwave public key not configured');
-        return;
-    }
-
-    // Get plan details from config
-    const planDetails = PAYMENT_CONFIG.plans[plan];
-    if (!planDetails) {
-        alert('Invalid plan selected. Please try again.');
-        return;
-    }
-
-    // Generate unique transaction reference
-    const txRef = 'SS-' + Date.now() + '-' + Math.floor(Math.random() * 1000000);
-
-    // Configure Flutterwave payment
-    const paymentData = {
-        public_key: PAYMENT_CONFIG.publicKey,
-        tx_ref: txRef,
-        amount: planDetails.amount,
-        currency: planDetails.currency,
-        payment_options: 'card,ussd,banktransfer',
-        redirect_url: PAYMENT_CONFIG.redirectUrl,
-        customer: {
-            email: '', // Will be collected by Flutterwave
-            name: '', // Will be collected by Flutterwave
-        },
-        customizations: {
-            title: PAYMENT_CONFIG.businessName,
-            description: `${planName} - ${planDetails.description}`,
-            logo: PAYMENT_CONFIG.businessLogo || '',
-        },
-        meta: {
-            plan: plan,
-            plan_name: planName,
-            subscription_type: planDetails.interval,
-        },
-    };
-
-    // Initialize Flutterwave payment modal
-    try {
-        FlutterwaveCheckout(paymentData);
-    } catch (error) {
-        console.error('Flutterwave initialization error:', error);
-        alert('Payment system error. Please try again or contact support.');
-    }
-}
 
 // ==================== HEADER SCROLL EFFECT ====================
 let lastScroll = 0;
@@ -204,7 +173,6 @@ function toggleMobileMenu() {
 }
 
 // ==================== FORM VALIDATION ====================
-// Add this when you create subscription forms
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
@@ -213,7 +181,7 @@ function validateEmail(email) {
 // ==================== ACCESSIBILITY ENHANCEMENTS ====================
 document.addEventListener('DOMContentLoaded', () => {
     // Add keyboard navigation for cards
-    const interactiveCards = document.querySelectorAll('.service-card, .pricing-card');
+    const interactiveCards = document.querySelectorAll('.service-card');
 
     interactiveCards.forEach(card => {
         card.setAttribute('tabindex', '0');
@@ -229,4 +197,4 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================== CONSOLE BRANDING ====================
 console.log('%c📚 StudentSuccess Platform', 'font-size: 20px; font-weight: bold; color: #667eea;');
 console.log('%cBuilt with ❤️ for students', 'font-size: 12px; color: #8892a6;');
-console.log('%cPowered by Flutterwave', 'font-size: 10px; color: #f5576c;');
+console.log('%cContact us to get started!', 'font-size: 10px; color: #f5576c;');
