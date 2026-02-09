@@ -46,80 +46,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ==================== CONTACT FORM HANDLING WITH EMAILJS ====================
+// ==================== LIVE CHAT INTEGRATION ====================
 
-document.addEventListener('DOMContentLoaded', () => {
-    const contactForm = document.getElementById('contactForm');
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            // Get form data
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                service: document.getElementById('service').value || 'Not specified',
-                message: document.getElementById('message').value
-            };
-
-            // Get submit button
-            const submitButton = contactForm.querySelector('button[type="submit"]');
-            const originalButtonText = submitButton.textContent;
-
-            // Show loading state
-            submitButton.textContent = 'Sending...';
-            submitButton.disabled = true;
-
-            // Check if EmailJS is configured
-            if (typeof emailjs === 'undefined') {
-                console.warn('EmailJS not loaded. Using mailto fallback.');
-                sendViaMailto(formData, submitButton, originalButtonText);
-                return;
-            }
-
-            // Send email using EmailJS
-            // Replace 'service_id' and 'template_id' with your actual IDs from EmailJS dashboard
-            emailjs.send('service_id', 'template_id', {
-                from_name: formData.name,
-                from_email: formData.email,
-                service_interested: formData.service,
-                message: formData.message,
-                to_email: 'cathleenmillertutor@gmail.com'
-            })
-                .then(function (response) {
-                    console.log('SUCCESS!', response.status, response.text);
-
-                    // Show success message
-                    alert(`Thank you, ${formData.name}! We've received your message and will get back to you soon at ${formData.email}.`);
-
-                    // Reset form
-                    contactForm.reset();
-
-                    // Reset button
-                    submitButton.textContent = originalButtonText;
-                    submitButton.disabled = false;
-                })
-                .catch(function (error) {
-                    console.error('EmailJS FAILED...', error);
-
-                    // Fallback to mailto
-                    sendViaMailto(formData, submitButton, originalButtonText);
-                });
-        });
+// Function to open live chat
+function openLiveChat() {
+    // Check if Tawk.to is loaded
+    if (typeof Tawk_API !== 'undefined') {
+        Tawk_API.maximize();
+        return;
     }
-});
 
-// Fallback function to open mailto link
-function sendViaMailto(formData, button, originalText) {
-    const mailtoLink = `mailto:cathleenmillertutor@gmail.com?subject=Contact from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nService: ${formData.service}\n\nMessage:\n${formData.message}`)}`;
+    // Check if Crisp is loaded
+    if (typeof $crisp !== 'undefined') {
+        $crisp.push(["do", "chat:open"]);
+        return;
+    }
 
-    alert('Opening your email client to send the message...');
-    window.location.href = mailtoLink;
+    // Check if Intercom is loaded
+    if (typeof Intercom !== 'undefined') {
+        Intercom('show');
+        return;
+    }
 
-    // Reset button
-    button.textContent = originalText;
-    button.disabled = false;
+    // Fallback: redirect to WhatsApp
+    alert('Live chat will be available soon! Redirecting you to WhatsApp...');
+    window.open('https://wa.me/19547104610', '_blank');
 }
 
 // ==================== HEADER SCROLL EFFECT ====================

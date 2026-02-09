@@ -205,57 +205,26 @@
         <p>Have questions? Want to learn more about our services? We're here to help!</p>
       </div>
 
-      <div class="contact-form-container">
-        <form class="contact-form" id="contactForm">
-          <div class="form-group">
-            <label for="name">Your Name</label>
-            <input type="text" id="name" name="name" required placeholder="John Doe">
-          </div>
+      <div class="contact-info-grid">
+        <div class="contact-item">
+          <div class="contact-icon">📧</div>
+          <h4>Email Us</h4>
+          <p>cathleenmillertutor@gmail.com</p>
+          <a href="mailto:cathleenmillertutor@gmail.com" class="btn-primary contact-btn">Send Email</a>
+        </div>
 
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" required placeholder="john@example.com">
-          </div>
+        <div class="contact-item">
+          <div class="contact-icon">💬</div>
+          <h4>Live Chat</h4>
+          <p>Available Mon-Fri, 9AM-5PM EAT</p>
+          <button class="btn-primary contact-btn" onclick="openLiveChat()">Start Chat</button>
+        </div>
 
-          <div class="form-group">
-            <label for="service">Service Interested In</label>
-            <select id="service" name="service">
-              <option value="">Select a service...</option>
-              <option value="essay-help">Essay Help</option>
-              <option value="exam-prep">Exam Preparation</option>
-              <option value="college-apps">College Applications</option>
-              <option value="study-materials">Study Materials</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="5" required
-              placeholder="Tell us how we can help you..."></textarea>
-          </div>
-
-          <button type="submit" class="btn-primary">Send Message</button>
-        </form>
-
-        <div class="contact-info">
-          <div class="contact-item">
-            <div class="contact-icon">📧</div>
-            <h4>Email Us</h4>
-            <p>cathleenmillertutor@gmail.com</p>
-          </div>
-
-          <div class="contact-item">
-            <div class="contact-icon">💬</div>
-            <h4>Live Chat</h4>
-            <p>Available Mon-Fri, 9AM-5PM EAT</p>
-          </div>
-
-          <div class="contact-item">
-            <div class="contact-icon">📱</div>
-            <h4>WhatsApp</h4>
-            <p>+1 (954) 710-4610</p>
-          </div>
+        <div class="contact-item">
+          <div class="contact-icon">📱</div>
+          <h4>WhatsApp</h4>
+          <p>+1 (954) 710-4610</p>
+          <a href="https://wa.me/19547104610" target="_blank" class="btn-primary contact-btn">Chat on WhatsApp</a>
         </div>
       </div>
 
