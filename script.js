@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ==================== CONTACT FORM HANDLING ====================
+// ==================== CONTACT FORM HANDLING WITH EMAILJS ====================
 
 document.addEventListener('DOMContentLoaded', () => {
     const contactForm = document.getElementById('contactForm');
@@ -59,38 +59,68 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = {
                 name: document.getElementById('name').value,
                 email: document.getElementById('email').value,
-                service: document.getElementById('service').value,
+                service: document.getElementById('service').value || 'Not specified',
                 message: document.getElementById('message').value
             };
 
-            // Log form data (in production, send to backend/email service)
-            console.log('Contact Form Submission:', formData);
+            // Get submit button
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.textContent;
 
-            // Show success message
-            alert(`Thank you, ${formData.name}! We've received your message and will get back to you soon at ${formData.email}.`);
+            // Show loading state
+            submitButton.textContent = 'Sending...';
+            submitButton.disabled = true;
 
-            // Reset form
-            contactForm.reset();
+            // Check if EmailJS is configured
+            if (typeof emailjs === 'undefined') {
+                console.warn('EmailJS not loaded. Using mailto fallback.');
+                sendViaMailto(formData, submitButton, originalButtonText);
+                return;
+            }
 
-            // In production, you would send this to your backend or email service:
-            // Example with EmailJS, Formspree, or your own API:
-            /*
-            fetch('/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            }).then(response => response.json())
-              .then(data => {
-                alert('Message sent successfully!');
-                contactForm.reset();
-              })
-              .catch(error => {
-                alert('Error sending message. Please try again.');
-              });
-            */
+            // Send email using EmailJS
+            // Replace 'service_id' and 'template_id' with your actual IDs from EmailJS dashboard
+            emailjs.send('service_id', 'template_id', {
+                from_name: formData.name,
+                from_email: formData.email,
+                service_interested: formData.service,
+                message: formData.message,
+                to_email: 'cathleenmillertutor@gmail.com'
+            })
+                .then(function (response) {
+                    console.log('SUCCESS!', response.status, response.text);
+
+                    // Show success message
+                    alert(`Thank you, ${formData.name}! We've received your message and will get back to you soon at ${formData.email}.`);
+
+                    // Reset form
+                    contactForm.reset();
+
+                    // Reset button
+                    submitButton.textContent = originalButtonText;
+                    submitButton.disabled = false;
+                })
+                .catch(function (error) {
+                    console.error('EmailJS FAILED...', error);
+
+                    // Fallback to mailto
+                    sendViaMailto(formData, submitButton, originalButtonText);
+                });
         });
     }
 });
+
+// Fallback function to open mailto link
+function sendViaMailto(formData, button, originalText) {
+    const mailtoLink = `mailto:cathleenmillertutor@gmail.com?subject=Contact from ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nEmail: ${formData.email}\nService: ${formData.service}\n\nMessage:\n${formData.message}`)}`;
+
+    alert('Opening your email client to send the message...');
+    window.location.href = mailtoLink;
+
+    // Reset button
+    button.textContent = originalText;
+    button.disabled = false;
+}
 
 // ==================== HEADER SCROLL EFFECT ====================
 let lastScroll = 0;
